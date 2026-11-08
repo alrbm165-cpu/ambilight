@@ -3,7 +3,7 @@
 #include <FastLED.h>
 
 // ---------------- settings ----------------
-#define NUM_LEDS    30      // MUST equal the total LED count set in Prismatik
+#define NUM_LEDS    60      // MUST equal the total LED count set in Prismatik
 #define DATA_PIN    5       // GPIO 5 -> strip DIN (green wire)
 #define BRIGHTNESS  150     // 0-255
 #define MAX_MA      500     // power limit; raise to ~1500 with a phone charger
