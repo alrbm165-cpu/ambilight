@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 env:
-  SKETCH: "."
   # CDCOnBoot=default -> Serial on the UART port (CH340/CP210x), use this on Windows 7
   # CDCOnBoot=cdc     -> Serial on the native USB port
   FQBN: "esp32:esp32:esp32s3:CDCOnBoot=default"
@@ -28,15 +27,17 @@ jobs:
           arduino-cli lib install FastLED
 
       - name: Compile
-        run: arduino-cli compile --fqbn "$FQBN" --export-binaries "$SKETCH"
+        run: arduino-cli compile --fqbn "$FQBN" --export-binaries .
 
       - name: Collect firmware
         run: |
           mkdir out
-          find "$SKETCH/build" -name '*.merged.bin' -exec cp {} out/ambilight.bin \;
+          ls -R build
+          cp build/*/*.bin out/
           ls -l out
 
       - uses: actions/upload-artifact@v4
         with:
           name: ambilight-firmware
-          path: out/ambilight.bin
+          path: out/
+          if-no-files-found: error
