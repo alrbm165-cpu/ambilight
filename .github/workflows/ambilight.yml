@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 env:
-  SKETCH: ambilight
-  # CDCOnBoot=default  -> Serial on the UART port (CH340/CP210x) - use this on Windows 7
-  # CDCOnBoot=cdc      -> Serial on the native USB port
+  SKETCH: "."
+  # CDCOnBoot=default -> Serial on the UART port (CH340/CP210x), use this on Windows 7
+  # CDCOnBoot=cdc     -> Serial on the native USB port
   FQBN: "esp32:esp32:esp32s3:CDCOnBoot=default"
 
 jobs:
