@@ -1,0 +1,42 @@
+name: Build Ambilight (ESP32-S3)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  SKETCH: ambilight
+  # CDCOnBoot=default  -> Serial on the UART port (CH340/CP210x) - use this on Windows 7
+  # CDCOnBoot=cdc      -> Serial on the native USB port
+  FQBN: "esp32:esp32:esp32s3:CDCOnBoot=default"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 core and FastLED
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@2.0.17
+          arduino-cli lib install FastLED
+
+      - name: Compile
+        run: arduino-cli compile --fqbn "$FQBN" --export-binaries "$SKETCH"
+
+      - name: Collect firmware
+        run: |
+          mkdir out
+          find "$SKETCH/build" -name '*.merged.bin' -exec cp {} out/ambilight.bin \;
+          ls -l out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ambilight-firmware
+          path: out/ambilight.bin
